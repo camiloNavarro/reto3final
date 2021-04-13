@@ -58,7 +58,8 @@ public class Controller {
 					//
 					ILista<YoutubeVideo> subListaPaisCategoria = modelo.Req1(categoryNameR1, countryR1);
 					view.printMessage("Los " +numVideos+ " videos tendencia en "+countryR1+ " con mas views de la categoria "+categoryNameR1+" son:");
-					for (int i = 1; i <= numVideos; i++)
+					view.printMessage("numero de videos de consulta"+subListaPaisCategoria.size());
+					for (int i = 1; i <= numVideos && i<=subListaPaisCategoria.size(); i++)
 					{
 						view.printMessage("-----------------------------------------" );
 						

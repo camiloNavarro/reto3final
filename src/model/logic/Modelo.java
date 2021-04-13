@@ -121,6 +121,7 @@ public class Modelo {
 
 				YoutubeVideo nuevo=new YoutubeVideo(videoID, trendingDate, title,channelTitle,categoryID,publishTime,tags,views,likes,dislikes,commentCount,thumbnailLink,commentsDisabled,ratingsDisabled,videoErrorOrRemoved,description,country);
 				darVideosDinamico().addLast(nuevo);
+				System.out.println("videos:"+ darVideosDinamico().size());
 			}
 		}
 		catch (Exception e)
@@ -212,99 +213,184 @@ public class Modelo {
 				videoValue.addLast(actual);
 				//System.out.println(videoValue.getElement(1).getTitle());
 				videosHash.put(keyActual, videoValue);
-				System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
+				//System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
 			}
 			else
 			{
-				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
-				ArregloDinamico <YoutubeVideo> tempList = videosHash.get(keyActual);
-				for (int h = 1; h <= tempList.size(); h++)
-				{
-					videoValue.addLast(tempList.getElement(h));
-				}
+				ArregloDinamico <YoutubeVideo> videoValue = videosHash.get(keyActual);
 				videoValue.addLast(actual);
-				//System.out.println(videoValue.getElement(1).getTitle());
-				videosHash.put(keyActual, videoValue);
+				//System.out.println(actual.getTitle());
+				//videosHash.put(keyActual, videoValue);
 			}
 		}
 		
 		String wantedKey = country+"-"+categoryName;
-		
+		if(videosHash.contains(wantedKey)==true)
+		{
 		ArregloDinamico <YoutubeVideo> valorHash = videosHash.get(wantedKey);
 		ordenarListaViews (valorHash, false);
-
 		return valorHash;
+		}
+		else
+		{
+			ArregloDinamico <YoutubeVideo> vacia =new ArregloDinamico <YoutubeVideo>(1);
+			return vacia;
+		}
+
+		
 	}
 
 	public void Req2 (String country)
 	{
-		ILista<YoutubeVideo> subListaPais = subListaPorPais (darVideosDinamico(), country);
-		ordenarListaNombre(subListaPais, true);
-
-		YoutubeVideo masRepetido = null;
-		YoutubeVideo ultimoContado = null;
-		int cuentaMaxima = 0;
-		int ultimaCuenta = 0;
-		for (int i = 1; i <= subListaPais.size(); i++) 
+		TablaHash<String, ArregloDinamico<YoutubeVideo>> videosHash = new TablaHash<String, ArregloDinamico<YoutubeVideo>>();
+		for (int i = 1; i <= videosDinamico.size(); i++)
 		{
-			YoutubeVideo actual = subListaPais.getElement(i);
-			if(ultimoContado == null)
+			YoutubeVideo actual = videosDinamico.getElement(i);
+			String keyActual = actual.getCountry();
+
+			if (!videosHash.contains(keyActual))
 			{
-				ultimaCuenta++;
+				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
+				videoValue.addLast(actual);
+				//System.out.println(videoValue.getElement(1).getTitle());
+				videosHash.put(keyActual, videoValue);
+				//System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
 			}
-			else if (actual.getTitle().compareTo(ultimoContado.getTitle()) == 0) 
+			else
 			{
-				ultimaCuenta++;
-			} 
-			else if (ultimaCuenta > cuentaMaxima) 
-			{
-				cuentaMaxima = ultimaCuenta;
-				masRepetido = ultimoContado;
+				ArregloDinamico <YoutubeVideo> videoValue = videosHash.get(keyActual);
+				videoValue.addLast(actual);
+				//System.out.println(actual.getTitle());
+				//videosHash.put(keyActual, videoValue);
 			}
-			ultimoContado = actual;
 		}
-		System.out.println("El video con mas dias como tendencia en "+ country + " es:");
-		System.out.println("titulo: "+masRepetido.getTitle());
-		System.out.println("canal: "+masRepetido.getChannelTitle());
-		System.out.println("country: "+masRepetido.getCountry());
-		System.out.println("dias en tendencia: "+cuentaMaxima);
+		
+		String wantedKey = country;
+		if(videosHash.contains(wantedKey)==true)
+		{
+		ArregloDinamico <YoutubeVideo> valorHash = videosHash.get(wantedKey);
+		ordenarListaNombre (valorHash, false);
+		//System.out.println( valorHash.getElement(1).getTitle());
+		YoutubeVideo mejor=null;
+		int mas=0;
+		YoutubeVideo ultimo=null;
+		int cont=0;
+		for(int i = 1; i<=valorHash.size();i++)
+		{
+			YoutubeVideo actual = valorHash.getElement(i);
+			if(ultimo == null)
+			{
+				ultimo=actual;
+				cont++;
+			}
+			else if (actual.getTitle().compareTo(ultimo.getTitle()) == 0)
+			{
+				cont++;
+			}
+			else  
+			{
+				if(cont>mas)
+				{
+						mas = cont;
+						mejor = ultimo;
+						//System.out.println( mejor.getTitle());
+					   ultimo = actual;
+					   cont=1;
+				}
+				else
+				{
+					ultimo = actual;
+					cont=1;
+				}
+			}
+		}
+		System.out.println("el video mas veces trending en "+ country+" es:");
+		System.out.println("titulo:  "+ mejor.getTitle());
+		System.out.println("canal:  "+ mejor.getChannelTitle());
+		System.out.println("pais:  "+ mejor.getCountry());
+		System.out.println("dias:  "+ mas);
+		}
+		else
+		{
+			ArregloDinamico <YoutubeVideo> vacia =new ArregloDinamico <YoutubeVideo>(1);
+		}
 	}
 
 	public void Req3 (String categoryName)
 	{
-		String IDbuscado = buscarCategoryID(categoryName);
-		ILista<YoutubeVideo> subListaCategoria = subListaPorCategoria (darVideosDinamico(), IDbuscado);
-
-		ordenarListaNombre(subListaCategoria, true);
-
-		YoutubeVideo masRepetido = null;
-		YoutubeVideo ultimoContado = null;
-		int cuentaMaxima = 0;
-		int ultimaCuenta = 0;
-		for (int i = 1; i <= subListaCategoria.size(); i++) 
+		TablaHash<String, ArregloDinamico<YoutubeVideo>> videosHash = new TablaHash<String, ArregloDinamico<YoutubeVideo>>();
+		for (int i = 1; i <= videosDinamico.size(); i++)
 		{
-			YoutubeVideo actual = subListaCategoria.getElement(i);
-			if(ultimoContado == null)
-			{
-				ultimaCuenta++;
-			}
-			else if (actual.getTitle().compareTo(ultimoContado.getTitle()) == 0) 
-			{
-				ultimaCuenta++;
-			} 
-			else if (ultimaCuenta > cuentaMaxima) 
-			{
-				cuentaMaxima = ultimaCuenta;
-				masRepetido = ultimoContado;
-			}
-			ultimoContado = actual;
-		}
+			YoutubeVideo actual = videosDinamico.getElement(i);
+			String categoryNameActual = getCategory(actual.getCategoryID()).getCategoryName();
+			String keyActual = categoryNameActual;
 
-		System.out.println("El video con mas dias como tendencia segun la categoria "+ categoryName + " es:");
-		System.out.println("titulo: "+masRepetido.getTitle());
-		System.out.println("canal: "+masRepetido.getChannelTitle());
-		System.out.println("category ID: "+masRepetido.getCategoryID());
-		System.out.println("dias en tendencia: "+cuentaMaxima);
+			if (!videosHash.contains(keyActual))
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
+				videoValue.addLast(actual);
+				//System.out.println(videoValue.getElement(1).getTitle());
+				videosHash.put(keyActual, videoValue);
+				//System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
+			}
+			else
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = videosHash.get(keyActual);
+				videoValue.addLast(actual);
+				//System.out.println(actual.getTitle());
+				//videosHash.put(keyActual, videoValue);
+			}
+		}
+		
+		String wantedKey = categoryName;
+		if(videosHash.contains(wantedKey)==true)
+		{
+		ArregloDinamico <YoutubeVideo> valorHash = videosHash.get(wantedKey);
+		ordenarListaNombre (valorHash, false);
+		//System.out.println( valorHash.getElement(1).getTitle());
+		YoutubeVideo mejor=null;
+		int mas=0;
+		YoutubeVideo ultimo=null;
+		int cont=0;
+		for(int i = 1; i<=valorHash.size();i++)
+		{
+			YoutubeVideo actual = valorHash.getElement(i);
+			if(ultimo == null)
+			{
+				ultimo=actual;
+				cont++;
+			}
+			else if (actual.getTitle().compareTo(ultimo.getTitle()) == 0)
+			{
+				cont++;
+			}
+			else  
+			{
+				if(cont>mas)
+				{
+						mas = cont;
+						mejor = ultimo;
+						//System.out.println( mejor.getTitle());
+					   ultimo = actual;
+					   cont=1;
+				}
+				else
+				{
+					ultimo = actual;
+					cont=1;
+				}
+			}
+		}
+		System.out.println("el video mas veces trending de la categoria "+ categoryName+" es:");
+		System.out.println("titulo:  "+ mejor.getTitle());
+		System.out.println("canal:  "+ mejor.getChannelTitle());
+		System.out.println("category id:  "+ mejor.getCategoryID());
+		System.out.println("dias:  "+ mas);
+		}
+		else
+		{
+			ArregloDinamico <YoutubeVideo> vacia =new ArregloDinamico <YoutubeVideo>(1);
+		}
 	}
 
 	public ILista<YoutubeVideo> Req4 (String country, String tag)

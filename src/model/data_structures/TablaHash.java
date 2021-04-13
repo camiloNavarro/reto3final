@@ -2,7 +2,7 @@ package model.data_structures;
 
 public class TablaHash <K extends Comparable <K>, V >  implements ITablaSimbolos <K , V>
 {
-	private static final int INITIAL_SIZE = 500000;
+	private static final int INITIAL_SIZE = 23117;
 
 	private int actSize;
 
@@ -21,7 +21,7 @@ public class TablaHash <K extends Comparable <K>, V >  implements ITablaSimbolos
 		int keyHash = hash(key);
 		if (value == null) 
 		{
-			System.out.println("NULO");
+			//System.out.println("NULO");
 			remove(key);
 			return;
 		}
@@ -31,16 +31,18 @@ public class TablaHash <K extends Comparable <K>, V >  implements ITablaSimbolos
 			actSize++;
 			NodeTH <K,V> nodoNuevo = new NodeTH <K,V>(key, value, null);
 			nodes.insertElement(nodoNuevo, keyHash);
+			//System.out.println("casilla vacia");
 			return;
 		}
 		
-		else if (nodes.getElement(keyHash) != null)
+		else  
 		{
 			for (NodeTH<K,V> i = nodes.getElement(keyHash); i != null; i = i.getNext()) 
 			{
 				if (key.compareTo(i.getKey()) == 0) 
 				{
 					i.setValue(value);
+					//System.out.println("llave existente");
 					return;
 				}
 			}
@@ -48,6 +50,7 @@ public class TablaHash <K extends Comparable <K>, V >  implements ITablaSimbolos
 			NodeTH <K,V> nodoNuevo = new NodeTH <K,V>(key, value, nodes.getElement(keyHash));
 			nodes.getElement(keyHash).setPrev(nodoNuevo);
 			nodes.insertElement(nodoNuevo, keyHash);
+			System.out.println("casilla ocupada nuevo nodo");
 		}
 	}
 

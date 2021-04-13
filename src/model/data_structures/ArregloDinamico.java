@@ -87,20 +87,22 @@ public class ArregloDinamico <T extends Comparable<T>> implements ILista <T>{
 			} 
 		}
 
-		T [] anterior = elementos;
-		elementos = (T[]) new Comparable [tamanoMax];
-
-		for ( int i = 0; i < posArreglo; i++)
-		{
-			elementos[i] = anterior[i];
-		}
-
-		elementos[posArreglo] = element;
-
-		for ( int j = posArreglo; j < size(); j++)
-		{
-			elementos[j+1] = anterior[j];
-		}
+//		T [] anterior = elementos;
+//		elementos = (T[]) new Comparable [tamanoMax];
+//
+//		for ( int i = 0; i < posArreglo; i++)
+//		{
+//			elementos[i] = anterior[i];
+//		}
+//
+//		elementos[posArreglo] = element;
+//
+//		for ( int j = posArreglo; j < size(); j++)
+//		{
+//			elementos[j+1] = anterior[j];
+//		}
+		
+		elementos[pos-1] = element;
 
 		tamanoAct++;
 
