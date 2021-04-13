@@ -37,22 +37,13 @@ public class Controller {
 			int optionCarga = lector.nextInt();
 			switch (optionCarga) {
 			case 1:
-				view.printMessage("Cargando en tabla hash ");
-				modelo.cargarVideosHash(); 
+				view.printMessage("Cargando en arreglo dinamico ");
+				modelo.cargarVideosDinamico(); 
 				modelo.cargarCategorias();
-				int sizeHash = modelo.getVideosHash().size();
-				view.printMessage("Cantidad de registros de videos cargados del archivo: " + sizeHash);
-				int sizeCategories = modelo.getVideosCategories().size();
-				view.printMessage("Cantidad de registros de videos cargados del archivo: " + sizeCategories);
-				//modelo.getInfoFirst();
-				view.printMessage("Lista de las categorias: ");
-//				for (int i = 1; i <= modelo.darCategoriasVideos().size(); i++)
-//				{
-//					String categoryID = modelo.darCategoriasVideos().getElement(i).getCategoryID();
-//					String categoryName = modelo.darCategoriasVideos().getElement(i).getCategoryName();
-//
-//					view.printMessage(categoryID + "|||" + categoryName);
-//				}
+				int sizeVideosDinamico = modelo.darVideosDinamico().size();
+				int sizeCategoriasDinamico = modelo.darCategoriasVideos().size();
+				view.printMessage("Cantidad de registros de videos cargados: " + sizeVideosDinamico);
+				view.printMessage("Cantidad de registros de categorias cargados: " + sizeCategoriasDinamico);
 
 				view.printMenuRequerimientos();
 				int optionReq = lector.nextInt();
@@ -64,19 +55,22 @@ public class Controller {
 					String countryR1 = lector.next();
 					view.printMessage("Cuantos videos con el mayor numero de reproducciones desea tener?");
 					int numVideos = lector.nextInt();
-					ILista<YoutubeVideo> subListCategoryCountry = modelo.Req1(categoryNameR1, countryR1);
+					//
+					ILista<YoutubeVideo> subListaPaisCategoria = modelo.Req1(categoryNameR1, countryR1);
 					view.printMessage("Los " +numVideos+ " videos tendencia en "+countryR1+ " con mas views de la categoria "+categoryNameR1+" son:");
 					for (int i = 1; i <= numVideos; i++)
 					{
 						view.printMessage("-----------------------------------------" );
-						view.printMessage("titulo: " +subListCategoryCountry.getElement(i).getTitle());
-						view.printMessage("canal: " +subListCategoryCountry.getElement(i).getTrendingDate());
-						view.printMessage("publish time: " +subListCategoryCountry.getElement(i).getChannelTitle());
-						view.printMessage("views: " +subListCategoryCountry.getElement(i).getPublishTime());
-						view.printMessage("likes: " +subListCategoryCountry.getElement(i).getViews());
-						view.printMessage("dislikes: " +subListCategoryCountry.getElement(i).getLikes());
-						view.printMessage("tags: " +subListCategoryCountry.getElement(i).getDislikes());
+						
+						view.printMessage("trendingDate: " +subListaPaisCategoria.getElement(i).getTrendingDate());
+						view.printMessage("title: " +subListaPaisCategoria.getElement(i).getTitle());
+						view.printMessage("channelTitle: " +subListaPaisCategoria.getElement(i).getChannelTitle());
+						view.printMessage("publishTime: " +subListaPaisCategoria.getElement(i).getPublishTime());
+						view.printMessage("views: " +subListaPaisCategoria.getElement(i).getViews());
+						view.printMessage("likes: " +subListaPaisCategoria.getElement(i).getLikes());
+						view.printMessage("dislikes: " +subListaPaisCategoria.getElement(i).getDislikes());
 					}
+					//
 					break;
 				case 2:
 					view.printMessage("Sobre cual pais desea aplicar el requerimiento?");

@@ -9,8 +9,6 @@ import org.apache.commons.csv.CSVRecord;
 
 import model.data_structures.ArregloDinamico;
 import model.data_structures.ILista;
-import model.data_structures.ITablaSimbolos;
-import model.data_structures.NodeTH;
 import model.data_structures.TablaHash;
 import model.utils.Ordenamiento;
 
@@ -22,11 +20,11 @@ public class Modelo {
 	/**
 	 * Atributos del modelo del mundo
 	 */
-	private ITablaSimbolos <String, ArregloDinamico<YoutubeVideo>> videosHash;
+	private ILista <YoutubeVideo> videosDinamico;
 
-	//	private ITablaSimbolos <String, ArregloDinamico<YoutubeVideo>> subListVideosHash;
+	private ILista <YoutubeVideo> subListaVideosDinamico;
 
-	private ILista <Category> videosCategories;
+	private ILista <Category> categoriasVideos;
 
 	public static String CSV_SMALL = "./data/videos-small.csv";
 	public static String CSV_ALL = "./data/videos-all.csv";
@@ -35,39 +33,39 @@ public class Modelo {
 
 	public Modelo()
 	{
-		videosHash = new TablaHash<String, ArregloDinamico<YoutubeVideo>>();
-		videosCategories = new ArregloDinamico<Category> (7);
-		//		subListVideosHash = null;
+		videosDinamico = new ArregloDinamico<YoutubeVideo>(7);
+		categoriasVideos = new ArregloDinamico<Category> (7);
+		subListaVideosDinamico = null;
 	}
 
-	public ITablaSimbolos <String, ArregloDinamico<YoutubeVideo>> getVideosHash ()
+	public ILista<YoutubeVideo> darVideosDinamico ()
 	{
-		return videosHash;
+		return videosDinamico;
 	}
 
-	//	public ITablaSimbolos <String, ArregloDinamico<YoutubeVideo>> getSubListVideosHash ()
-	//	{
-	//		return subListVideosHash;
-	//	}
-
-	public ILista<Category> getVideosCategories ()
+	public ILista<YoutubeVideo> darsubListaVideosDinamico ()
 	{
-		return videosCategories;
+		return subListaVideosDinamico;
 	}
 
-	//	public void getInfoFirst()
-	//	{
-	//		YoutubeVideo firstVideo = videosHash.getElement(1);
-	//		
-	//		System.out.println("El primer video cargado fue:");
-	//		System.out.println("titulo: "+firstVideo.getTitle());
-	//		System.out.println("canal: "+firstVideo.getChannelTitle());
-	//		System.out.println("dias en tendencia: "+firstVideo.getTrendingDate());
-	//		System.out.println("country: "+firstVideo.getCountry());
-	//		System.out.println("views: "+firstVideo.getViews());
-	//		System.out.println("likes: "+firstVideo.getLikes());
-	//		System.out.println("dislikes: "+firstVideo.getDislikes());
-	//	}
+	public ILista<Category> darCategoriasVideos ()
+	{
+		return categoriasVideos;
+	}
+
+	public void getInfoFirst()
+	{
+		YoutubeVideo firstVideo = videosDinamico.getElement(1);
+
+		System.out.println("El primer video cargado fue:");
+		System.out.println("titulo: "+firstVideo.getTitle());
+		System.out.println("canal: "+firstVideo.getChannelTitle());
+		System.out.println("dias en tendencia: "+firstVideo.getTrendingDate());
+		System.out.println("country: "+firstVideo.getCountry());
+		System.out.println("views: "+firstVideo.getViews());
+		System.out.println("likes: "+firstVideo.getLikes());
+		System.out.println("dislikes: "+firstVideo.getDislikes());
+	}
 
 	public void cargarCategorias ()
 	{
@@ -80,9 +78,12 @@ public class Modelo {
 				String categoryID = record.get("id");
 				String categoryName = record.get("name");
 				categoryName = categoryName.trim();
-
+				
 				Category nuevaCategoria = new Category (categoryID, categoryName);
-				getVideosCategories().addLast(nuevaCategoria);
+				if (categoriasVideos.isPresent(nuevaCategoria) == -1)
+				{
+					darCategoriasVideos().addLast(nuevaCategoria);
+				}
 			}
 		}
 		catch (Exception e)
@@ -92,7 +93,7 @@ public class Modelo {
 
 	}
 
-	public void cargarVideosHash() 
+	public void cargarVideosDinamico() 
 	{
 		try
 		{
@@ -118,19 +119,8 @@ public class Modelo {
 				String description = record.get("description");
 				String country = record.get("country");
 
-				YoutubeVideo newVideo =new YoutubeVideo(videoID, trendingDate, title,channelTitle,categoryID,publishTime,tags,views,likes,dislikes,commentCount,thumbnailLink,commentsDisabled,ratingsDisabled,videoErrorOrRemoved,description,country);
-				String videoKey = country + "-" + getCategory(categoryID);
-				if (!videosHash.contains(videoKey))
-				{
-					ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
-					videoValue.addFirst(newVideo);
-					videosHash.put(videoKey, videoValue);
-				}
-				else
-				{
-					videosHash.get(videoKey).addLast(newVideo);
-				}
-
+				YoutubeVideo nuevo=new YoutubeVideo(videoID, trendingDate, title,channelTitle,categoryID,publishTime,tags,views,likes,dislikes,commentCount,thumbnailLink,commentsDisabled,ratingsDisabled,videoErrorOrRemoved,description,country);
+				darVideosDinamico().addLast(nuevo);
 			}
 		}
 		catch (Exception e)
@@ -142,21 +132,23 @@ public class Modelo {
 	public Category getCategory (String categoryID)
 	{
 		Category buscada = null;
-		for (int i = 1; i <= videosCategories.size(); i++)
+		boolean stop = false;
+		for (int i = 1; i <= categoriasVideos.size() && !stop; i++)
 		{
-			Category actual = videosCategories.getElement(i);
+			Category actual = categoriasVideos.getElement(i);
 			if(actual.getCategoryID().compareTo(categoryID) == 0)
 			{
 				buscada = actual;
+				stop=true;
 			}
 		}
 		return buscada;
 	}
 
-	//	public void getSubListaDinamico (int numElementos)
-	//	{
-	//		subListaVideosDinamico = videosHash.subLista(numElementos);
-	//	}
+	public void getSubListaDinamico (int numElementos)
+	{
+		subListaVideosDinamico = videosDinamico.subLista(numElementos);
+	}
 
 	public void ordenarLista (ILista <YoutubeVideo> lista,String tipoOrdenamiento, boolean ascendente)
 	{
@@ -207,24 +199,55 @@ public class Modelo {
 
 	public ILista<YoutubeVideo> Req1 (String categoryName, String country)
 	{
-		String wantedKey = country + "-" + categoryName;
-		ordenarListaViews (videosHash.get(wantedKey), false);
+		TablaHash<String, ArregloDinamico<YoutubeVideo>> videosHash = new TablaHash<String, ArregloDinamico<YoutubeVideo>>();
+		for (int i = 1; i <= videosDinamico.size(); i++)
+		{
+			YoutubeVideo actual = videosDinamico.getElement(i);
+			String categoryNameActual = getCategory(actual.getCategoryID()).getCategoryName();
+			String keyActual = actual.getCountry()+"-"+categoryNameActual;
 
-		return videosHash.get(wantedKey);
+			if (!videosHash.contains(keyActual))
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
+				videoValue.addLast(actual);
+				//System.out.println(videoValue.getElement(1).getTitle());
+				videosHash.put(keyActual, videoValue);
+				System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
+			}
+			else
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
+				ArregloDinamico <YoutubeVideo> tempList = videosHash.get(keyActual);
+				for (int h = 1; h <= tempList.size(); h++)
+				{
+					videoValue.addLast(tempList.getElement(h));
+				}
+				videoValue.addLast(actual);
+				//System.out.println(videoValue.getElement(1).getTitle());
+				videosHash.put(keyActual, videoValue);
+			}
+		}
+		
+		String wantedKey = country+"-"+categoryName;
+		
+		ArregloDinamico <YoutubeVideo> valorHash = videosHash.get(wantedKey);
+		ordenarListaViews (valorHash, false);
+
+		return valorHash;
 	}
 
 	public void Req2 (String country)
 	{
-		ILista<YoutubeVideo> subListCountry = subListByCountry(country);
-		ordenarListaNombre(subListCountry, true);
+		ILista<YoutubeVideo> subListaPais = subListaPorPais (darVideosDinamico(), country);
+		ordenarListaNombre(subListaPais, true);
 
 		YoutubeVideo masRepetido = null;
 		YoutubeVideo ultimoContado = null;
 		int cuentaMaxima = 0;
 		int ultimaCuenta = 0;
-		for (int i = 1; i <= subListCountry.size(); i++) 
+		for (int i = 1; i <= subListaPais.size(); i++) 
 		{
-			YoutubeVideo actual = subListCountry.getElement(i);
+			YoutubeVideo actual = subListaPais.getElement(i);
 			if(ultimoContado == null)
 			{
 				ultimaCuenta++;
@@ -249,21 +272,56 @@ public class Modelo {
 
 	public void Req3 (String categoryName)
 	{
-		
+		String IDbuscado = buscarCategoryID(categoryName);
+		ILista<YoutubeVideo> subListaCategoria = subListaPorCategoria (darVideosDinamico(), IDbuscado);
+
+		ordenarListaNombre(subListaCategoria, true);
+
+		YoutubeVideo masRepetido = null;
+		YoutubeVideo ultimoContado = null;
+		int cuentaMaxima = 0;
+		int ultimaCuenta = 0;
+		for (int i = 1; i <= subListaCategoria.size(); i++) 
+		{
+			YoutubeVideo actual = subListaCategoria.getElement(i);
+			if(ultimoContado == null)
+			{
+				ultimaCuenta++;
+			}
+			else if (actual.getTitle().compareTo(ultimoContado.getTitle()) == 0) 
+			{
+				ultimaCuenta++;
+			} 
+			else if (ultimaCuenta > cuentaMaxima) 
+			{
+				cuentaMaxima = ultimaCuenta;
+				masRepetido = ultimoContado;
+			}
+			ultimoContado = actual;
+		}
+
+		System.out.println("El video con mas dias como tendencia segun la categoria "+ categoryName + " es:");
+		System.out.println("titulo: "+masRepetido.getTitle());
+		System.out.println("canal: "+masRepetido.getChannelTitle());
+		System.out.println("category ID: "+masRepetido.getCategoryID());
+		System.out.println("dias en tendencia: "+cuentaMaxima);
 	}
 
 	public ILista<YoutubeVideo> Req4 (String country, String tag)
 	{
-		
+		ILista<YoutubeVideo> subListaPaisTag = subListaPorPaisTag (darVideosDinamico(),tag, country);
+		ordenarListaLikes (subListaPaisTag, false);
+
+		return subListaPaisTag;
 	}
 
 	public String buscarCategoryID (String categoryName)
 	{
 		boolean buscado = false;
 		String IDbuscado = "";
-		for (int i = 1 ; i <= getVideosCategories().size() && !buscado; i++)
+		for (int i = 1 ; i <= darCategoriasVideos().size() && !buscado; i++)
 		{
-			Category actual = getVideosCategories().getElement(i);
+			Category actual = darCategoriasVideos().getElement(i);
 			if(actual.getCategoryName().equalsIgnoreCase(categoryName))
 			{
 				IDbuscado = actual.getCategoryID();
@@ -274,93 +332,74 @@ public class Modelo {
 		return IDbuscado;
 	}
 
-	public ILista<YoutubeVideo> subListByCountry (String country)
+	public ILista<YoutubeVideo> subListaPorPais (ILista<YoutubeVideo> lista, String country)
 	{
-		ILista<YoutubeVideo> subListCountry = new ArregloDinamico <YoutubeVideo>(1);
+		ILista <YoutubeVideo> subListaPais = new ArregloDinamico <YoutubeVideo>(1);
 
-		for (int i = 1; i <= videosCategories.size(); i++)
+		for (int i = 1 ; i <= lista.size(); i ++)
 		{
-			String tempKey = country + "-" + videosCategories.getElement(i).getCategoryName();
-			ArregloDinamico <YoutubeVideo> tempList = videosHash.get(tempKey);
-
-			for (int j = 1; j <= tempList.size(); j++)
+			YoutubeVideo actual = lista.getElement(i);
+			if(actual.getCountry().compareTo(country) == 0)
 			{
-				subListCountry.addLast(tempList.getElement(j));
+				subListaPais.addLast(actual);
 			}
-		}
 
-		return subListCountry;
+		}
+		return subListaPais;
 	}
 
+	public ILista<YoutubeVideo> subListaPorCategoria (ILista<YoutubeVideo> lista, String categoryID)
+	{
+		ILista <YoutubeVideo> subListaCategoria = new ArregloDinamico <YoutubeVideo>(1);
 
-	//	public ILista<YoutubeVideo> subListaPorPais (ILista<YoutubeVideo> lista, String country)
-	//	{
-	//		ILista <YoutubeVideo> subListaPais = new ArregloDinamico <YoutubeVideo>(1);
-	//
-	//		for (int i = 1 ; i <= lista.size(); i ++)
-	//		{
-	//			YoutubeVideo actual = lista.getElement(i);
-	//			if(actual.getCountry().compareTo(country) == 0)
-	//			{
-	//				subListaPais.addLast(actual);
-	//			}
-	//
-	//		}
-	//		return subListaPais;
-	//	}
-	//
-	//	public ILista<YoutubeVideo> subListaPorCategoria (ILista<YoutubeVideo> lista, String categoryID)
-	//	{
-	//		ILista <YoutubeVideo> subListaCategoria = new ArregloDinamico <YoutubeVideo>(1);
-	//
-	//		for (int i = 1 ; i <= lista.size(); i ++)
-	//		{
-	//			YoutubeVideo actual = lista.getElement(i);
-	//			if(categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0) )
-	//			{         
-	//				subListaCategoria.addLast(actual);
-	//			}
-	//			else if(actual.getCategoryID().compareTo(categoryID)==0)
-	//			{         
-	//				subListaCategoria.addLast(actual);
-	//			}
-	//
-	//		}
-	//		return subListaCategoria;
-	//	}
-	//
-	//	public ILista<YoutubeVideo> subListaPorPaisCategoria (ILista<YoutubeVideo> lista,String categoryID, String country )
-	//	{
-	//		ILista <YoutubeVideo> subListaPaisCategoria = new ArregloDinamico <YoutubeVideo>(1);
-	//
-	//		for (int i = 1 ; i <= lista.size(); i ++)
-	//		{
-	//			YoutubeVideo actual = lista.getElement(i);
-	//			if((categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0)) && (actual.getCountry().compareTo(country) == 0) )
-	//			{         
-	//				subListaPaisCategoria.addLast(actual);
-	//			}
-	//			else if((actual.getCategoryID().compareTo(categoryID)==0) && (actual.getCountry().compareTo(country) == 0))
-	//			{         
-	//				subListaPaisCategoria.addLast(actual);
-	//			}
-	//
-	//		}
-	//		return subListaPaisCategoria;
-	//	}
-	//
-	//	public ILista <YoutubeVideo> subListaPorPaisTag (ILista<YoutubeVideo> lista,String tag, String country )
-	//	{
-	//		ILista <YoutubeVideo> subListaPaisTag = new ArregloDinamico <YoutubeVideo>(1);
-	//
-	//		for (int i = 1 ; i <= lista.size(); i ++)
-	//		{
-	//			YoutubeVideo actual = lista.getElement(i);
-	//			if(actual.getCountry().compareTo(country) == 0 && actual.getTags().contains(tag))
-	//			{
-	//				subListaPaisTag.addLast(actual);
-	//			}
-	//		}
-	//		return subListaPaisTag;
-	//	}
+		for (int i = 1 ; i <= lista.size(); i ++)
+		{
+			YoutubeVideo actual = lista.getElement(i);
+			if(categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0) )
+			{         
+				subListaCategoria.addLast(actual);
+			}
+			else if(actual.getCategoryID().compareTo(categoryID)==0)
+			{         
+				subListaCategoria.addLast(actual);
+			}
+
+		}
+		return subListaCategoria;
+	}
+
+	public ILista<YoutubeVideo> subListaPorPaisCategoria (ILista<YoutubeVideo> lista,String categoryID, String country )
+	{
+		ILista <YoutubeVideo> subListaPaisCategoria = new ArregloDinamico <YoutubeVideo>(1);
+
+		for (int i = 1 ; i <= lista.size(); i ++)
+		{
+			YoutubeVideo actual = lista.getElement(i);
+			if((categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0)) && (actual.getCountry().compareTo(country) == 0) )
+			{         
+				subListaPaisCategoria.addLast(actual);
+			}
+			else if((actual.getCategoryID().compareTo(categoryID)==0) && (actual.getCountry().compareTo(country) == 0))
+			{         
+				subListaPaisCategoria.addLast(actual);
+			}
+
+		}
+		return subListaPaisCategoria;
+	}
+
+	public ILista <YoutubeVideo> subListaPorPaisTag (ILista<YoutubeVideo> lista,String tag, String country )
+	{
+		ILista <YoutubeVideo> subListaPaisTag = new ArregloDinamico <YoutubeVideo>(1);
+
+		for (int i = 1 ; i <= lista.size(); i ++)
+		{
+			YoutubeVideo actual = lista.getElement(i);
+			if(actual.getCountry().compareTo(country) == 0 && actual.getTags().contains(tag))
+			{
+				subListaPaisTag.addLast(actual);
+			}
+		}
+		return subListaPaisTag;
+	}
 }

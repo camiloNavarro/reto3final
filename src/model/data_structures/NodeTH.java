@@ -15,6 +15,7 @@ public class NodeTH <K extends Comparable <K>, V > implements Comparable <NodeTH
 		key = pKey;
 		value = pValue;
 		next = pNext;
+		prev = null;
 	}
 	
 	public K getKey ()
@@ -51,8 +52,12 @@ public class NodeTH <K extends Comparable <K>, V > implements Comparable <NodeTH
 	{
 		next = pNext;
 	}
-
 	
+	public void setPrev(NodeTH<K, V> pPrev)
+	{
+		prev = pPrev;
+	}
+
 	public int compareTo (NodeTH<K, V> another)
 	{
 		return key.compareTo(another.getKey());

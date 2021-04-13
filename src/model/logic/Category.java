@@ -24,7 +24,7 @@ public class Category implements Comparable<Category>
 	
 	public int compareTo(Category otro) 
 	{
-		return this.getCategoryName().compareTo(otro.getCategoryName()); 
+		return this.getCategoryID().compareTo(otro.getCategoryID()); 
 	}
 
 }
