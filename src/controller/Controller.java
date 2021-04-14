@@ -56,6 +56,7 @@ public class Controller {
 					view.printMessage("Cuantos videos con el mayor numero de reproducciones desea tener?");
 					int numVideos = lector.nextInt();
 					//
+					long timereq1= System.currentTimeMillis();
 					ILista<YoutubeVideo> subListaPaisCategoria = modelo.Req1(categoryNameR1, countryR1);
 					view.printMessage("Los " +numVideos+ " videos tendencia en "+countryR1+ " con mas views de la categoria "+categoryNameR1+" son:");
 					view.printMessage("numero de videos de consulta"+subListaPaisCategoria.size());
@@ -71,24 +72,39 @@ public class Controller {
 						view.printMessage("likes: " +subListaPaisCategoria.getElement(i).getLikes());
 						view.printMessage("dislikes: " +subListaPaisCategoria.getElement(i).getDislikes());
 					}
+					long stimereq1 = System.currentTimeMillis();
+					long delta1= stimereq1-timereq1;
+					view.printMessage("tiempo en ms= "+delta1);
 					//
 					break;
 				case 2:
 					view.printMessage("Sobre cual pais desea aplicar el requerimiento?");
 					String countryR2 = lector.next();
+					long timereq2= System.currentTimeMillis();
 					modelo.Req2(countryR2);
+					long stimereq2 = System.currentTimeMillis();
+					long delta2= stimereq2-timereq2;
+					view.printMessage("tiempo en ms= "+delta2);
 					break;
 				case 3:
 					view.printMessage("Sobre cual categoria desea aplicar el requerimiento?");
 					String categoryNameR3 = lector.next();
+					long timereq3= System.currentTimeMillis();
 					modelo.Req3(categoryNameR3);
+					long stimereq3 = System.currentTimeMillis();
+					long delta3= stimereq3-timereq3;
+					view.printMessage("tiempo en ms= "+delta3);
 					break;
 				case 4:
 					view.printMessage("Sobre cual tag desea aplicar el requerimiento?");
 					String tag = lector.next();
 					view.printMessage("Sobre cuantos videos desea aplicar el requerimiento?");
 					int b = lector.nextInt();
+					long timereq4= System.currentTimeMillis();
 					modelo.Req4(tag,b);
+					long stimereq4 = System.currentTimeMillis();
+					long delta4= stimereq4-timereq4;
+					view.printMessage("tiempo en ms= "+delta4);
 					break;
 				case 5:
 					fin = true;
