@@ -20,7 +20,7 @@ public class View
 		public void printMenuCarga()
 		{
 			System.out.println("Escoja la representacion que desea");
-			System.out.println("1. Tabla hash");
+			System.out.println("1. cargar datos");
 			System.out.println("2. Exit");
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}

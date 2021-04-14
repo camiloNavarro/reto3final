@@ -114,7 +114,7 @@ public class YoutubeVideo  implements Comparable<YoutubeVideo>{
 	
 	public String[] getSeparatedTags()
 	{
-		String[] separatedTags = tags.split("\"\\|\"");
+		String[] separatedTags = tags.split("\\|");
 		return separatedTags;
 	}
 

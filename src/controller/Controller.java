@@ -84,25 +84,11 @@ public class Controller {
 					modelo.Req3(categoryNameR3);
 					break;
 				case 4:
-					view.printMessage("Sobre cual pais desea aplicar el requerimiento?");
-					String countryR4 = lector.next();
 					view.printMessage("Sobre cual tag desea aplicar el requerimiento?");
-					String tagR4 = lector.next();
-					view.printMessage("Cuantos videos con el mayor numero de likes desea tener?");
-					int numVideosR4 = lector.nextInt();
-					ILista<YoutubeVideo> subListaPaisTag = modelo.Req4(countryR4, tagR4);
-					view.printMessage("Los " +numVideosR4+ " videos de "+countryR4+ " con mas likes y con el tag  "+ tagR4 +" son:");
-					for (int i = 1; i <= numVideosR4; i++)
-					{
-						view.printMessage("-----------------------------------------" );
-						view.printMessage("titulo: " +subListaPaisTag.getElement(i).getTitle());
-						view.printMessage("canal: " +subListaPaisTag.getElement(i).getChannelTitle());
-						view.printMessage("publish time: " +subListaPaisTag.getElement(i).getPublishTime());
-						view.printMessage("views: " +subListaPaisTag.getElement(i).getViews());
-						view.printMessage("likes: " +subListaPaisTag.getElement(i).getLikes());
-						view.printMessage("dislikes: " +subListaPaisTag.getElement(i).getDislikes());
-						view.printMessage("tags: " +subListaPaisTag.getElement(i).getTags());
-					}
+					String tag = lector.next();
+					view.printMessage("Sobre cuantos videos desea aplicar el requerimiento?");
+					int b = lector.nextInt();
+					modelo.Req4(tag,b);
 					break;
 				case 5:
 					fin = true;

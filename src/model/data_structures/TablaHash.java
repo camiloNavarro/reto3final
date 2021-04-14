@@ -50,7 +50,7 @@ public class TablaHash <K extends Comparable <K>, V >  implements ITablaSimbolos
 			NodeTH <K,V> nodoNuevo = new NodeTH <K,V>(key, value, nodes.getElement(keyHash));
 			nodes.getElement(keyHash).setPrev(nodoNuevo);
 			nodes.insertElement(nodoNuevo, keyHash);
-			System.out.println("casilla ocupada nuevo nodo");
+			//System.out.println("casilla ocupada nuevo nodo");
 		}
 	}
 

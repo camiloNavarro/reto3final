@@ -121,7 +121,7 @@ public class Modelo {
 
 				YoutubeVideo nuevo=new YoutubeVideo(videoID, trendingDate, title,channelTitle,categoryID,publishTime,tags,views,likes,dislikes,commentCount,thumbnailLink,commentsDisabled,ratingsDisabled,videoErrorOrRemoved,description,country);
 				darVideosDinamico().addLast(nuevo);
-				System.out.println("videos:"+ darVideosDinamico().size());
+				//System.out.println("videos:"+ darVideosDinamico().size());
 			}
 		}
 		catch (Exception e)
@@ -393,12 +393,61 @@ public class Modelo {
 		}
 	}
 
-	public ILista<YoutubeVideo> Req4 (String country, String tag)
+	public void Req4 (String tag, int n)
 	{
-		ILista<YoutubeVideo> subListaPaisTag = subListaPorPaisTag (darVideosDinamico(),tag, country);
-		ordenarListaLikes (subListaPaisTag, false);
-
-		return subListaPaisTag;
+		TablaHash<String, ArregloDinamico<YoutubeVideo>> videosHash = new TablaHash<String, ArregloDinamico<YoutubeVideo>>();
+		for (int i = 1; i <= videosDinamico.size(); i++)
+		{
+			YoutubeVideo actual = videosDinamico.getElement(i);
+			String keyActual = null;
+			if(actual.getTags().contains(tag)==true)
+			{
+				keyActual = tag;
+			}
+			else
+			{
+				keyActual = actual.getTags();
+			}
+			if (!videosHash.contains(keyActual))
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = new ArregloDinamico <YoutubeVideo> (2);
+				videoValue.addLast(actual);
+				//System.out.println(videoValue.getElement(1).getTitle());
+				videosHash.put(keyActual, videoValue);
+				//System.out.println(keyActual+"1VIDEO:"+videosHash.get(keyActual).getElement(1).getTitle());
+			}
+			else
+			{
+				ArregloDinamico <YoutubeVideo> videoValue = videosHash.get(keyActual);
+				videoValue.addLast(actual);
+				//System.out.println(actual.getTitle());
+				//videosHash.put(keyActual, videoValue);
+			}
+		}
+		
+		String wantedKey = tag;
+		if(videosHash.contains(wantedKey)==true)
+		{
+		ArregloDinamico <YoutubeVideo> valorHash = videosHash.get(wantedKey);
+		ordenarListaLikes (valorHash, false);
+		System.out.println("los "+n+" videos con mas likes con el tag "+tag+" son:");
+		System.out.println("-------------------------------------------------");
+		for(int i = 1; i <= n; i++)
+		{
+			System.out.println("titulo: "+valorHash.getElement(i).getChannelTitle());
+			System.out.println("titulo del canal: "+valorHash.getElement(i).getChannelTitle());
+			System.out.println("tiempo de publicacion: "+valorHash.getElement(i).getPublishTime());
+			System.out.println("views: "+valorHash.getElement(i).getViews());
+			System.out.println("likes: "+valorHash.getElement(i).getLikes());
+			System.out.println("dislikes: "+valorHash.getElement(i).getDislikes());
+			System.out.println("tags: "+valorHash.getElement(i).getTags());
+			System.out.println("-------------------------------------------------");
+		}
+		}
+		else
+		{
+			ArregloDinamico <YoutubeVideo> vacia =new ArregloDinamico <YoutubeVideo>(1);
+		}
 	}
 
 	public String buscarCategoryID (String categoryName)
