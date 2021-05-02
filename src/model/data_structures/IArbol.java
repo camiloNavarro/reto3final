@@ -1,5 +1,7 @@
 package model.data_structures;
 
+import model.logic.Audio;
+
 public interface IArbol<T> 
 {
     
@@ -22,5 +24,9 @@ public interface IArbol<T>
      * @return T elemento del �rbol que corresponde al modelo o <code>null</code> si este no existe.
      */
     public T buscar(T modelo);
+
+	public ArregloDinamico<Audio> darPreorden();
+	
+	public void insertar(T elemento);
     
 }
