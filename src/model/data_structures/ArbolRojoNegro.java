@@ -92,7 +92,7 @@ public class ArbolRojoNegro<T extends Comparable<? super T>> implements Serializ
      */
     public ArregloDinamico darPreorden( )
     {
-    	ArregloDinamico preorden = new ArregloDinamico(1);
+    	ArregloDinamico preorden = new ArregloDinamico(10);
         if( raiz != null )
             raiz.darPreorden( preorden );
         return preorden;

@@ -19,6 +19,10 @@ import model.utils.Ordenamiento;
  *
  */
 public class Modelo {
+	private static final String Quick = null;
+
+
+
 	/**
 	 * Atributos del modelo del mundo
 	 */
@@ -39,7 +43,7 @@ public class Modelo {
 		ArbolRojoNegro arbolAudios = new ArbolRojoNegro<Audio>();
 	}
 
-	public ArregloDinamico<Audio> darVideosDinamico ()
+	public ArregloDinamico<Audio> darAudiosDinamico ()
 	{
 		return arbolAudios.darPreorden();
 	}
@@ -66,7 +70,7 @@ public class Modelo {
 				
 				Audio nuevo=new Audio(audioID, instrumentalness, liveness, speechiness, danceability, valence, loudness, tempo, acousticness, energy, artist_id );
 				arbolAudios.insertar(nuevo);
-				//System.out.println("videos:"+ darVideosDinamico().size());
+				System.out.println("audio:"+ audioID);
 			}
 		}
 		catch (Exception e)
@@ -74,55 +78,313 @@ public class Modelo {
 
 		}
 	}
+	
 
 
-	public void ordenarLista (ILista <YoutubeVideo> lista,String tipoOrdenamiento, boolean ascendente)
+	public void req1(String cat,int min, int max)
 	{
-		Comparator<YoutubeVideo> comparadorXLikes = new YoutubeVideo.ComparadorXLikes();
-		Ordenamiento<YoutubeVideo> algsOrdenamientoVideos = new Ordenamiento<YoutubeVideo>();
-
-		if(tipoOrdenamiento.equalsIgnoreCase("Insertion"))
-		{
-			algsOrdenamientoVideos.ordenarInsercion(lista, comparadorXLikes, ascendente);
+		ordenarListaInstr(darAudiosDinamico(), true, cat);
+		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
+		
+		if(cat.compareToIgnoreCase("instrumentalness")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getInstrumentalness()>=min && darAudiosDinamico().getElement(i).getInstrumentalness()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getInstrumentalness()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
 		}
-		else if(tipoOrdenamiento.equalsIgnoreCase("Shell"))
-		{
-			algsOrdenamientoVideos.ordenarShell(lista, comparadorXLikes, ascendente);
+		
+		else if(cat.compareToIgnoreCase("liveness")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getILivness()>=min && darAudiosDinamico().getElement(i).getILivness()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getILivness()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
 		}
-		else if(tipoOrdenamiento.equalsIgnoreCase("Merge"))
-		{
-			algsOrdenamientoVideos.ordenarMergeSort(lista, comparadorXLikes, ascendente);
+		
+		else if(cat.compareToIgnoreCase("speechiness")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getSpeechiness()>=min && darAudiosDinamico().getElement(i).getSpeechiness()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getSpeechiness()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
 		}
-		else if(tipoOrdenamiento.equalsIgnoreCase("Quick"))
-		{
-			algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXLikes, ascendente);
+		
+		else if(cat.compareToIgnoreCase("danceability")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getDanceability()>=min && darAudiosDinamico().getElement(i).getDanceability()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getDanceability()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
 		}
+		
+		else if(cat.compareToIgnoreCase("valence")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getValence()>=min && darAudiosDinamico().getElement(i).getValence()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getValence()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
+		}
+		
+		else if(cat.compareToIgnoreCase("loudness")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getLoudness()>=min && darAudiosDinamico().getElement(i).getLoudness()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getLoudness()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
+		}
+		
+		else if(cat.compareToIgnoreCase("tempo")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getTempo()>=min && darAudiosDinamico().getElement(i).getTempo()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getTempo()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
+		}
+		
+		else if(cat.compareToIgnoreCase("acousticness")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getAcoustince()>=min && darAudiosDinamico().getElement(i).getAcoustince()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getAcoustince()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
+		}
+		
+		else if(cat.compareToIgnoreCase("energy")==0){
+			for(int i=1;i<darAudiosDinamico().size();i++){
+				if(darAudiosDinamico().getElement(i).getEnergy()>=min && darAudiosDinamico().getElement(i).getEnergy()<=max){
+					buscados.addLast(darAudiosDinamico().getElement(i));
+				}
+				if(darAudiosDinamico().getElement(i).getEnergy()>max){
+					i=darAudiosDinamico().size();
+				}
+			}
+		}
+		
+		else{
+			System.out.println("no existe esa caracteristica");
+			return;
+		}
+		
+		int artistas =0;
+		String art="artista";
+		ordenarListaInstr(buscados, true, art);
+		String actual="";
+		
+		for(int i =1 ; i<buscados.size(); i++){
+			if(buscados.getElement(i).getArtistiID().compareToIgnoreCase(actual)!=0){
+				artistas++;
+				actual = buscados.getElement(i).getArtistiID();
+			}
+		}
+		
+		System.out.println("+++++ Req No. 1 Results... +++++");
+		System.out.println(cat +" is between "+min +" and " + max);
+		System.out.println("total reproductions: " + buscados.size() + " total of unique artists: " + artistas);
+	}
+	
+	public void req2(int min1,int min2, int max1, int max2)
+	{
+		String ener = "energy";
+		ordenarListaInstr(darAudiosDinamico(), true, ener);
+		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
+		
+		for(int i=1; i<darAudiosDinamico().size(); i++){
+			if(darAudiosDinamico().getElement(i).getEnergy()>=min1 && darAudiosDinamico().getElement(i).getEnergy()<=max1){
+				buscados.addLast(darAudiosDinamico().getElement(i));
+			}
+			if(darAudiosDinamico().getElement(i).getEnergy()>max1){
+				i=darAudiosDinamico().size();
+			}
+		}
+		
+		String dance = "danceability";
+		ordenarListaInstr(buscados, true, dance);
+		ArregloDinamico<Audio> buscados2=new ArregloDinamico<>(10);
+		
+		for(int i=1;i<buscados2.size();i++){
+			if(buscados.getElement(i).getDanceability()>=min2 && buscados.getElement(i).getDanceability()<=max2){
+				buscados2.addLast(darAudiosDinamico().getElement(i));
+			}
+			if(darAudiosDinamico().getElement(i).getDanceability()>max2){
+				i=darAudiosDinamico().size();
+			}
+		}
+		
+		int artistas =0;
+		String id="id";
+		ordenarListaInstr(buscados2, true, id);
+		String actual="";
+		
+		for(int i =1 ; i<buscados2.size(); i++){
+			if(buscados2.getElement(i).getAudioID().compareToIgnoreCase(actual)!=0){
+				artistas++;
+				actual = buscados2.getElement(i).getAudioID();
+			}
+		}
+		
+		System.out.println("+++++ Req No. 2 Results... +++++");
+		System.out.println(" energy is between "+min1 +" and " + max1);
+		System.out.println(" danceability is between "+min2 +" and " + max2);
+		System.out.println(" total of unique tracks: " + artistas);
+		for(int i =1; i<6; i++){
+			System.out.println(" track"+i+": "+ buscados2.getElement(i).getArtistiID()+" with energy: "+buscados2.getElement(i).getEnergy()+" and danceability: "+buscados2.getElement(i).getDanceability());
+		}
+		
+	}
+	
+	public void req3(int min1,int min2, int max1, int max2)
+	{
+		String ener = "instrumentalness";
+		ordenarListaInstr(darAudiosDinamico(), true, ener);
+		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
+		
+		for(int i=1; i<darAudiosDinamico().size(); i++){
+			if(darAudiosDinamico().getElement(i).getInstrumentalness()>=min1 && darAudiosDinamico().getElement(i).getInstrumentalness()<=max1){
+				buscados.addLast(darAudiosDinamico().getElement(i));
+			}
+			if(darAudiosDinamico().getElement(i).getInstrumentalness()>max1){
+				i=darAudiosDinamico().size();
+			}
+		}
+		
+		String dance = "tempo";
+		ordenarListaInstr(buscados, true, dance);
+		ArregloDinamico<Audio> buscados2=new ArregloDinamico<>(10);
+		
+		for(int i=1;i<buscados.size();i++){
+			if(buscados.getElement(i).getTempo()>=min2 && buscados.getElement(i).getTempo()<=max2){
+				buscados2.addLast(darAudiosDinamico().getElement(i));
+			}
+			if(darAudiosDinamico().getElement(i).getDanceability()>max2){
+				i=buscados.size();
+			}
+		}
+		
+		int artistas =0;
+		String id="id";
+		ordenarListaInstr(buscados2, true, id);
+		String actual="";
+		
+		for(int i =1 ; i<buscados2.size(); i++){
+			if(buscados2.getElement(i).getAudioID().compareToIgnoreCase(actual)!=0){
+				artistas++;
+				actual = buscados2.getElement(i).getAudioID();
+			}
+		}
+		
+		System.out.println("+++++ Req No. 2 Results... +++++");
+		System.out.println(" instrumentalness is between "+min1 +" and " + max1);
+		System.out.println(" tempo is between "+min2 +" and " + max2);
+		System.out.println(" total of unique tracks: " + artistas);
+		for(int i =1; i<6; i++){
+			System.out.println(" track"+i+": "+ buscados2.getElement(i).getArtistiID()+" with instrumentalness: "+buscados2.getElement(i).getInstrumentalness()+" and tempo: "+buscados2.getElement(i).getTempo());
+		}
+		
+	}
+	
+	public void req4()
+	{
+		
 	}
 
-	public void ordenarListaNombre (ILista <YoutubeVideo> lista, boolean ascendente)
+	public void ordenarListaInstr (ILista <Audio> lista, boolean ascendente,String cat)
 	{
-		Comparator<YoutubeVideo> comparadorXTitulo = new YoutubeVideo.ComparadorXTitulo();
-		Ordenamiento<YoutubeVideo> algsOrdenamientoVideos = new Ordenamiento<YoutubeVideo>();
+		if(cat.compareToIgnoreCase("instrumentalness")==0){
+			Comparator<Audio> comparadorXistrumental = new Audio.ComparadorXistrumental();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
 
-		algsOrdenamientoVideos.ordenarMergeSort(lista, comparadorXTitulo, ascendente);
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXistrumental, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("liveness")==0){
+			Comparator<Audio> comparadorXLiv = new Audio.ComparadorXlivness();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXLiv, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("speechiness")==0){
+			Comparator<Audio> comparadorXSpe = new Audio.ComparadorXSpeech();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXSpe, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("danceability")==0){
+			Comparator<Audio> comparadorXDan = new Audio.ComparadorXDance();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXDan, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("valence")==0){
+			Comparator<Audio> comparadorXVal = new Audio.ComparadorXValence();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXVal, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("loudness")==0){
+			Comparator<Audio> comparadorXLou = new Audio.ComparadorXLoud();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXLou, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("tempo")==0){
+			Comparator<Audio> comparadorXTem = new Audio.ComparadorXTempo();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXTem, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("acousticness")==0){
+			Comparator<Audio> comparadorXAco = new Audio.ComparadorXAcouns();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXAco, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("energy")==0){
+			Comparator<Audio> comparadorXener = new Audio.ComparadorXAcouns();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXener, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("artista")==0){
+			Comparator<Audio> comparadorXar = new Audio.ComparadorXArtista();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXar, ascendente);
+		}
+		else if(cat.compareToIgnoreCase("id")==0){
+			Comparator<Audio> comparadorXid = new Audio.ComparadorXId();
+			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
+
+				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXid, ascendente);
+		}
+		else{
+			System.out.println("no existe la caracteristica");
+		}
+		
 	}
-
-	public void ordenarListaLikes (ILista <YoutubeVideo> lista, boolean ascendente)
-	{
-		Comparator<YoutubeVideo> comparadorXLikes = new YoutubeVideo.ComparadorXLikes();
-		Ordenamiento<YoutubeVideo> algsOrdenamientoVideos = new Ordenamiento<YoutubeVideo>();
-
-		algsOrdenamientoVideos.ordenarMergeSort(lista, comparadorXLikes, ascendente);
-	}
-
-	public void ordenarListaViews (ILista <YoutubeVideo> lista, boolean ascendente)
-	{
-		Comparator<YoutubeVideo> comparadorXViews = new YoutubeVideo.ComparadorXViews();
-		Ordenamiento<YoutubeVideo> algsOrdenamientoVideos = new Ordenamiento<YoutubeVideo>();
-
-		algsOrdenamientoVideos.ordenarMergeSort(lista, comparadorXViews, ascendente);
-	}
-
 	
 
 	public ILista<YoutubeVideo> subListaPorPais (ILista<YoutubeVideo> lista, String country)
