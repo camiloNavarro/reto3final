@@ -5,18 +5,18 @@ import java.util.Comparator;
 public class Audio implements Comparable<Audio>{
 	
 	private String audioID;
-	private int instrumentalness;
-	private int liveness;
-	private	int speechiness;
-	private int danceability;
-	private int valence;
-	private int loudness;
-	private int tempo;
-	private int acousticness;
-	private int energy;
+	private float instrumentalness;
+	private float liveness;
+	private	float speechiness;
+	private float danceability;
+	private float valence;
+	private float loudness;
+	private float tempo;
+	private float acousticness;
+	private float energy;
 	private String artist_id;
 	
-	public Audio(String pAudioID, int ins, int liv,int spe, int dan, int val, int loud, int tem, int aco, int ene, String art)
+	public Audio(String pAudioID, float ins, float liv,float spe, float dan, float val, float loud, float tem, float aco, float ene, String art)
 	{
 		audioID= pAudioID;
 		instrumentalness = ins;
@@ -36,47 +36,47 @@ public class Audio implements Comparable<Audio>{
 		return audioID;
 	}
 	
-	public int getInstrumentalness()
+	public float getInstrumentalness()
 	{
 		return instrumentalness;
 	}
 	
-	public int getILivness()
+	public float getILivness()
 	{
 		return liveness;
 	}
 	
-	public int getSpeechiness()
+	public float getSpeechiness()
 	{
 		return speechiness;
 	}
 	
-	public int getDanceability()
+	public float getDanceability()
 	{
 		return danceability;
 	}
 	
-	public int getValence()
+	public float getValence()
 	{
 		return valence;
 	}
 	
-	public int getLoudness()
+	public float getLoudness()
 	{
 		return loudness;
 	}
 	
-	public int getTempo()
+	public float getTempo()
 	{
 		return tempo;
 	}
 	
-	public int getAcoustince()
+	public float getAcoustince()
 	{
 		return acousticness;
 	}
 	
-	public int getEnergy()
+	public float getEnergy()
 	{
 		return energy;
 	}
@@ -99,7 +99,13 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getInstrumentalness()-a2.getInstrumentalness();
+			if(a1.getInstrumentalness()-a2.getInstrumentalness()>0)
+				return 1;
+			else if(a1.getInstrumentalness()-a2.getInstrumentalness()<0)
+				return -1;
+			else
+				return 0;
+				
 		}
 
 	}
@@ -111,7 +117,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getILivness()-a2.getILivness();
+			if(a1.getILivness()-a2.getILivness()>0)
+				return 1;
+			else if (a1.getILivness()-a2.getILivness()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -123,7 +134,13 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getSpeechiness()-a2.getSpeechiness();
+			if(a1.getSpeechiness()-a2.getSpeechiness()>0)
+				return 1;
+			else if (a1.getSpeechiness()-a2.getSpeechiness()<0)
+				return -1;
+			else
+				return 0;
+			
 		}
 
 	}
@@ -135,7 +152,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getDanceability()-a2.getDanceability();
+			if(a1.getDanceability()-a2.getDanceability()>0)
+				return 1;
+			else if (a1.getDanceability()-a2.getDanceability()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -147,7 +169,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getValence()-a2.getValence();
+			if(a1.getValence()-a2.getValence()>0)
+				return 1;
+			else if (a1.getValence()-a2.getValence()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -159,7 +186,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getLoudness()-a2.getLoudness();
+			if(a1.getLoudness()-a2.getLoudness()>0)
+				return 1;
+			else if (a1.getLoudness()-a2.getLoudness()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -171,7 +203,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getTempo()-a2.getTempo();
+			if(a1.getTempo()-a2.getTempo()>0)
+				return 1;
+			else if (a1.getTempo()-a2.getTempo()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -183,7 +220,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getAcoustince()-a2.getAcoustince();
+			if(a1.getAcoustince()-a2.getAcoustince()>0)
+				return 1;
+			else if (a1.getAcoustince()-a2.getAcoustince()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -195,7 +237,12 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
-			return a1.getEnergy()-a2.getEnergy();
+			if(a1.getEnergy()-a2.getEnergy()>0)
+				return 1;
+			else if (a1.getEnergy()-a2.getEnergy()<0)
+				return -1;
+			else
+				return 0;
 		}
 
 	}
@@ -207,6 +254,7 @@ public class Audio implements Comparable<Audio>{
 		 * valor positivo si video1 tiene más likes que video2. */
 		public int compare(Audio a1, Audio a2) 
 		{
+
 			return a1.getArtistiID().compareToIgnoreCase(a2.getArtistiID());
 		}
 

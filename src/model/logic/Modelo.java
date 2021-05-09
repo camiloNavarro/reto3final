@@ -11,6 +11,7 @@ import model.data_structures.ArbolRojoNegro;
 import model.data_structures.ArregloDinamico;
 import model.data_structures.IArbol;
 import model.data_structures.ILista;
+import model.data_structures.Queue;
 import model.data_structures.TablaHash;
 import model.utils.Ordenamiento;
 
@@ -32,429 +33,236 @@ public class Modelo {
 
 	//private ILista <Category> categoriasVideos;
 	
-	private IArbol <Audio> arbolAudios;
+	private ArbolRojoNegro<Float, Audio> arbolLiv;
+	private ArbolRojoNegro<Float, Audio> arbolIns;
+	private ArbolRojoNegro<Float, Audio> arbolSpe;
+	private ArbolRojoNegro<Float, Audio> arbolDan;
+	private ArbolRojoNegro<Float, Audio> arbolVal;
+	private ArbolRojoNegro<Float, Audio> arbolLou;
+	private ArbolRojoNegro<Float, Audio> arbolTem;
+	private ArbolRojoNegro<Float, Audio> arbolAco;
+	private ArbolRojoNegro<Float, Audio> arbolEne;
 
 	
 	public static String CONTEXT = 	"./data/context_content_features-large.csv";
+	
+	public static String SMALL = 	"./data/context_content_features-small.csv";
 
 
 	public Modelo()
 	{
-		ArbolRojoNegro arbolAudios = new ArbolRojoNegro<Audio>();
+		arbolLiv = new ArbolRojoNegro();
+		arbolIns = new ArbolRojoNegro();
+		arbolSpe = new ArbolRojoNegro();
+		arbolDan = new ArbolRojoNegro();
+		arbolVal = new ArbolRojoNegro();
+		arbolLou = new ArbolRojoNegro();
+		arbolTem = new ArbolRojoNegro();
+		arbolAco = new ArbolRojoNegro();
+		arbolEne = new ArbolRojoNegro();
 	}
 
-	public ArregloDinamico<Audio> darAudiosDinamico ()
-	{
-		return arbolAudios.darPreorden();
-	}
 
 	public void cargarVideosDinamico() 
 	{
 		try
 		{
-			Reader in = new FileReader(CONTEXT);
+			Reader in = new FileReader(SMALL);
 			Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
 			for (CSVRecord record : records) 
 			{
 				String audioID = record.get("track_id");
-				int instrumentalness = Integer.parseInt(record.get("instrumentalness"));
-				int liveness = Integer.parseInt(record.get("liveness"));
-				int speechiness = Integer.parseInt(record.get("speechiness"));
-				int danceability = Integer.parseInt(record.get("danceability"));
-				int valence = Integer.parseInt(record.get("valence"));
-				int loudness = Integer.parseInt(record.get("loudness"));
-				int tempo = Integer.parseInt(record.get("tempo"));
-				int acousticness = Integer.parseInt(record.get("acousticness"));
-				int energy = Integer.parseInt(record.get("energy"));
+				float instrumentalness = Float.parseFloat(record.get("instrumentalness"));
+				float liveness = Float.parseFloat(record.get("liveness"));
+				float speechiness = Float.parseFloat(record.get("speechiness"));
+				float danceability = Float.parseFloat(record.get("danceability"));
+				float valence = Float.parseFloat(record.get("valence"));
+				float loudness = Float.parseFloat(record.get("loudness"));
+				float tempo = Float.parseFloat(record.get("tempo"));
+				float acousticness = Float.parseFloat(record.get("acousticness"));
+				float energy = Float.parseFloat(record.get("energy"));
 				String artist_id = record.get("artist_id");
-				
+				//System.out.println("audio1:"+ audioID);
 				Audio nuevo=new Audio(audioID, instrumentalness, liveness, speechiness, danceability, valence, loudness, tempo, acousticness, energy, artist_id );
-				arbolAudios.insertar(nuevo);
-				System.out.println("audio:"+ audioID);
+				//System.out.println("audio2:"+ nuevo.getILivness());
+				arbolLiv.put(nuevo.getILivness(), nuevo);
+				arbolIns.put(nuevo.getInstrumentalness(), nuevo);
+				arbolSpe.put(nuevo.getSpeechiness(), nuevo);
+				arbolDan.put(nuevo.getDanceability(), nuevo);
+				arbolVal.put(nuevo.getValence(), nuevo);
+				arbolLou.put(nuevo.getLoudness(), nuevo);
+				arbolTem.put(nuevo.getTempo(), nuevo);
+				arbolAco.put(nuevo.getAcoustince(), nuevo);
+				arbolEne.put(nuevo.getEnergy(), nuevo);
+				
 			}
 		}
 		catch (Exception e)
 		{
-
+           System.out.println("cargar videos dinamico "+e.getMessage());
 		}
 	}
 	
 
 
-	public void req1(String cat,int min, int max)
+	public Queue<Audio> req1(String cat,float min, float max)
 	{
-		ordenarListaInstr(darAudiosDinamico(), true, cat);
-		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
-		
-		if(cat.compareToIgnoreCase("instrumentalness")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getInstrumentalness()>=min && darAudiosDinamico().getElement(i).getInstrumentalness()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getInstrumentalness()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("liveness")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getILivness()>=min && darAudiosDinamico().getElement(i).getILivness()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getILivness()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("speechiness")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getSpeechiness()>=min && darAudiosDinamico().getElement(i).getSpeechiness()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getSpeechiness()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("danceability")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getDanceability()>=min && darAudiosDinamico().getElement(i).getDanceability()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getDanceability()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("valence")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getValence()>=min && darAudiosDinamico().getElement(i).getValence()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getValence()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("loudness")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getLoudness()>=min && darAudiosDinamico().getElement(i).getLoudness()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getLoudness()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("tempo")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getTempo()>=min && darAudiosDinamico().getElement(i).getTempo()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getTempo()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("acousticness")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getAcoustince()>=min && darAudiosDinamico().getElement(i).getAcoustince()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getAcoustince()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else if(cat.compareToIgnoreCase("energy")==0){
-			for(int i=1;i<darAudiosDinamico().size();i++){
-				if(darAudiosDinamico().getElement(i).getEnergy()>=min && darAudiosDinamico().getElement(i).getEnergy()<=max){
-					buscados.addLast(darAudiosDinamico().getElement(i));
-				}
-				if(darAudiosDinamico().getElement(i).getEnergy()>max){
-					i=darAudiosDinamico().size();
-				}
-			}
-		}
-		
-		else{
-			System.out.println("no existe esa caracteristica");
-			return;
-		}
-		
-		int artistas =0;
-		String art="artista";
-		ordenarListaInstr(buscados, true, art);
-		String actual="";
-		
-		for(int i =1 ; i<buscados.size(); i++){
-			if(buscados.getElement(i).getArtistiID().compareToIgnoreCase(actual)!=0){
-				artistas++;
-				actual = buscados.getElement(i).getArtistiID();
-			}
-		}
-		
-		System.out.println("+++++ Req No. 1 Results... +++++");
-		System.out.println(cat +" is between "+min +" and " + max);
-		System.out.println("total reproductions: " + buscados.size() + " total of unique artists: " + artistas);
-	}
-	
-	public void req2(int min1,int min2, int max1, int max2)
-	{
-		String ener = "energy";
-		ordenarListaInstr(darAudiosDinamico(), true, ener);
-		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
-		
-		for(int i=1; i<darAudiosDinamico().size(); i++){
-			if(darAudiosDinamico().getElement(i).getEnergy()>=min1 && darAudiosDinamico().getElement(i).getEnergy()<=max1){
-				buscados.addLast(darAudiosDinamico().getElement(i));
-			}
-			if(darAudiosDinamico().getElement(i).getEnergy()>max1){
-				i=darAudiosDinamico().size();
-			}
-		}
-		
-		String dance = "danceability";
-		ordenarListaInstr(buscados, true, dance);
-		ArregloDinamico<Audio> buscados2=new ArregloDinamico<>(10);
-		
-		for(int i=1;i<buscados2.size();i++){
-			if(buscados.getElement(i).getDanceability()>=min2 && buscados.getElement(i).getDanceability()<=max2){
-				buscados2.addLast(darAudiosDinamico().getElement(i));
-			}
-			if(darAudiosDinamico().getElement(i).getDanceability()>max2){
-				i=darAudiosDinamico().size();
-			}
-		}
-		
-		int artistas =0;
-		String id="id";
-		ordenarListaInstr(buscados2, true, id);
-		String actual="";
-		
-		for(int i =1 ; i<buscados2.size(); i++){
-			if(buscados2.getElement(i).getAudioID().compareToIgnoreCase(actual)!=0){
-				artistas++;
-				actual = buscados2.getElement(i).getAudioID();
-			}
-		}
-		
-		System.out.println("+++++ Req No. 2 Results... +++++");
-		System.out.println(" energy is between "+min1 +" and " + max1);
-		System.out.println(" danceability is between "+min2 +" and " + max2);
-		System.out.println(" total of unique tracks: " + artistas);
-		for(int i =1; i<6; i++){
-			System.out.println(" track"+i+": "+ buscados2.getElement(i).getArtistiID()+" with energy: "+buscados2.getElement(i).getEnergy()+" and danceability: "+buscados2.getElement(i).getDanceability());
-		}
-		
-	}
-	
-	public void req3(int min1,int min2, int max1, int max2)
-	{
-		String ener = "instrumentalness";
-		ordenarListaInstr(darAudiosDinamico(), true, ener);
-		ArregloDinamico<Audio> buscados=new ArregloDinamico<>(10);
-		
-		for(int i=1; i<darAudiosDinamico().size(); i++){
-			if(darAudiosDinamico().getElement(i).getInstrumentalness()>=min1 && darAudiosDinamico().getElement(i).getInstrumentalness()<=max1){
-				buscados.addLast(darAudiosDinamico().getElement(i));
-			}
-			if(darAudiosDinamico().getElement(i).getInstrumentalness()>max1){
-				i=darAudiosDinamico().size();
-			}
-		}
-		
-		String dance = "tempo";
-		ordenarListaInstr(buscados, true, dance);
-		ArregloDinamico<Audio> buscados2=new ArregloDinamico<>(10);
-		
-		for(int i=1;i<buscados.size();i++){
-			if(buscados.getElement(i).getTempo()>=min2 && buscados.getElement(i).getTempo()<=max2){
-				buscados2.addLast(darAudiosDinamico().getElement(i));
-			}
-			if(darAudiosDinamico().getElement(i).getDanceability()>max2){
-				i=buscados.size();
-			}
-		}
-		
-		int artistas =0;
-		String id="id";
-		ordenarListaInstr(buscados2, true, id);
-		String actual="";
-		
-		for(int i =1 ; i<buscados2.size(); i++){
-			if(buscados2.getElement(i).getAudioID().compareToIgnoreCase(actual)!=0){
-				artistas++;
-				actual = buscados2.getElement(i).getAudioID();
-			}
-		}
-		
-		System.out.println("+++++ Req No. 2 Results... +++++");
-		System.out.println(" instrumentalness is between "+min1 +" and " + max1);
-		System.out.println(" tempo is between "+min2 +" and " + max2);
-		System.out.println(" total of unique tracks: " + artistas);
-		for(int i =1; i<6; i++){
-			System.out.println(" track"+i+": "+ buscados2.getElement(i).getArtistiID()+" with instrumentalness: "+buscados2.getElement(i).getInstrumentalness()+" and tempo: "+buscados2.getElement(i).getTempo());
-		}
-		
-	}
-	
-	public void req4()
-	{
-		
-	}
-
-	public void ordenarListaInstr (ILista <Audio> lista, boolean ascendente,String cat)
-	{
-		if(cat.compareToIgnoreCase("instrumentalness")==0){
-			Comparator<Audio> comparadorXistrumental = new Audio.ComparadorXistrumental();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXistrumental, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("liveness")==0){
-			Comparator<Audio> comparadorXLiv = new Audio.ComparadorXlivness();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXLiv, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("speechiness")==0){
-			Comparator<Audio> comparadorXSpe = new Audio.ComparadorXSpeech();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXSpe, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("danceability")==0){
-			Comparator<Audio> comparadorXDan = new Audio.ComparadorXDance();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXDan, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("valence")==0){
-			Comparator<Audio> comparadorXVal = new Audio.ComparadorXValence();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXVal, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("loudness")==0){
-			Comparator<Audio> comparadorXLou = new Audio.ComparadorXLoud();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXLou, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("tempo")==0){
-			Comparator<Audio> comparadorXTem = new Audio.ComparadorXTempo();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXTem, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("acousticness")==0){
-			Comparator<Audio> comparadorXAco = new Audio.ComparadorXAcouns();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXAco, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("energy")==0){
-			Comparator<Audio> comparadorXener = new Audio.ComparadorXAcouns();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXener, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("artista")==0){
-			Comparator<Audio> comparadorXar = new Audio.ComparadorXArtista();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXar, ascendente);
-		}
-		else if(cat.compareToIgnoreCase("id")==0){
-			Comparator<Audio> comparadorXid = new Audio.ComparadorXId();
-			Ordenamiento<Audio> algsOrdenamientoVideos = new Ordenamiento<Audio>();
-
-				algsOrdenamientoVideos.ordenarQuickSort(lista, comparadorXid, ascendente);
-		}
-		else{
-			System.out.println("no existe la caracteristica");
-		}
-		
-	}
-	
-
-	public ILista<YoutubeVideo> subListaPorPais (ILista<YoutubeVideo> lista, String country)
-	{
-		ILista <YoutubeVideo> subListaPais = new ArregloDinamico <YoutubeVideo>(1);
-
-		for (int i = 1 ; i <= lista.size(); i ++)
+		Queue<Audio> que =null;
+		if(cat.compareToIgnoreCase("liveness")==0)
 		{
-			YoutubeVideo actual = lista.getElement(i);
-			if(actual.getCountry().compareTo(country) == 0)
+		que=(Queue<Audio>) arbolLiv.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("speechiness")==0)
+		{
+		que=(Queue<Audio>) arbolSpe.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("instrumentalness")==0)
+		{
+		que=(Queue<Audio>) arbolIns.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("danceability")==0)
+		{
+		que=(Queue<Audio>) arbolDan.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("valence")==0)
+		{
+		que=(Queue<Audio>) arbolVal.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("loudness")==0)
+		{
+		que=(Queue<Audio>) arbolLou.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("tempo")==0)
+		{
+		que=(Queue<Audio>) arbolTem.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("acousticness")==0)
+		{
+		que=(Queue<Audio>) arbolAco.values(min, max);
+		}
+		else if(cat.compareToIgnoreCase("energy")==0)
+		{
+		que=(Queue<Audio>) arbolEne.values(min, max);
+		}
+		return que;
+	}
+	
+	public ArregloDinamico<Audio> req2(float min1,float min2, float max1, float max2)
+	{
+		Queue que=(Queue<Audio>) arbolEne.values(min1, max1);
+		ArregloDinamico<Audio>artistas=new ArregloDinamico<>(10);
+		while(que.size()!=0)
+		{
+			Audio prueba=(Audio) que.dequeue();
+			if(prueba.getDanceability()<=max2 && prueba.getDanceability()>=min2)
 			{
-				subListaPais.addLast(actual);
+				artistas.addLast(prueba);
 			}
-
 		}
-		return subListaPais;
-	}
-
-	public ILista<YoutubeVideo> subListaPorCategoria (ILista<YoutubeVideo> lista, String categoryID)
-	{
-		ILista <YoutubeVideo> subListaCategoria = new ArregloDinamico <YoutubeVideo>(1);
-
-		for (int i = 1 ; i <= lista.size(); i ++)
+		ArregloDinamico<Audio>respuesta=new ArregloDinamico<>(10);
+		for(int i =1; i<artistas.size(); i++)
 		{
-			YoutubeVideo actual = lista.getElement(i);
-			if(categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0) )
-			{         
-				subListaCategoria.addLast(actual);
-			}
-			else if(actual.getCategoryID().compareTo(categoryID)==0)
-			{         
-				subListaCategoria.addLast(actual);
-			}
-
-		}
-		return subListaCategoria;
-	}
-
-	public ILista<YoutubeVideo> subListaPorPaisCategoria (ILista<YoutubeVideo> lista,String categoryID, String country )
-	{
-		ILista <YoutubeVideo> subListaPaisCategoria = new ArregloDinamico <YoutubeVideo>(1);
-
-		for (int i = 1 ; i <= lista.size(); i ++)
-		{
-			YoutubeVideo actual = lista.getElement(i);
-			if((categoryID.compareTo("23") == 0 && (actual.getCategoryID().compareTo(categoryID)==0 || actual.getCategoryID().compareTo("34")==0)) && (actual.getCountry().compareTo(country) == 0) )
-			{         
-				subListaPaisCategoria.addLast(actual);
-			}
-			else if((actual.getCategoryID().compareTo(categoryID)==0) && (actual.getCountry().compareTo(country) == 0))
-			{         
-				subListaPaisCategoria.addLast(actual);
-			}
-
-		}
-		return subListaPaisCategoria;
-	}
-
-	public ILista <YoutubeVideo> subListaPorPaisTag (ILista<YoutubeVideo> lista,String tag, String country )
-	{
-		ILista <YoutubeVideo> subListaPaisTag = new ArregloDinamico <YoutubeVideo>(1);
-
-		for (int i = 1 ; i <= lista.size(); i ++)
-		{
-			YoutubeVideo actual = lista.getElement(i);
-			if(actual.getCountry().compareTo(country) == 0 && actual.getTags().contains(tag))
+			if(respuesta.isPresent(artistas.getElement(i))==-1)
 			{
-				subListaPaisTag.addLast(actual);
+				respuesta.addLast(artistas.getElement(i));
 			}
 		}
-		return subListaPaisTag;
+		return respuesta;
+	}
+	
+	public ArregloDinamico<Audio> req3(float min1,float min2, float max1, float max2)
+	{
+		Queue que=(Queue<Audio>) arbolIns.values(min1, max1);
+		ArregloDinamico<Audio>artistas=new ArregloDinamico<>(10);
+		while(que.size()!=0)
+		{
+			Audio prueba=(Audio) que.dequeue();
+			if(prueba.getTempo()<=max2 && prueba.getTempo()>=min2)
+			{
+				artistas.addLast(prueba);
+			}
+		}
+		ArregloDinamico<Audio>respuesta=new ArregloDinamico<>(10);
+		for(int i =1; i<artistas.size(); i++)
+		{
+			if(respuesta.isPresent(artistas.getElement(i))==-1)
+			{
+				respuesta.addLast(artistas.getElement(i));
+			}
+		}
+		return respuesta;
+	}
+	
+	public ArregloDinamico<Audio> req4(String buscado)
+	{
+		ArregloDinamico<Audio>reggae=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>down=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>chill=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>hip=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>jazz=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>pop=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>rb=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>rock=new ArregloDinamico<>(10);
+		ArregloDinamico<Audio>metal=new ArregloDinamico<>(10);
+		float max =(float) 160.0;
+		float min =(float) 60.0;
+		Queue que=(Queue<Audio>) arbolTem.values(min, max);
+		while(que.size()!=0)
+		{			
+			Audio prueba = (Audio) que.dequeue();
+			//System.out.println(prueba.getTempo());
+			if(prueba.getTempo()>=60.0 && prueba.getTempo()<=90.0)
+				reggae.addLast(prueba);
+			if(prueba.getTempo()>=70.0 && prueba.getTempo()<=100.0)
+				down.addLast(prueba);
+			if(prueba.getTempo()>=90.0 && prueba.getTempo()<=120.0)
+				chill.addLast(prueba);
+			if(prueba.getTempo()>=85.0 && prueba.getTempo()<=115.0)
+				hip.addLast(prueba);
+			if(prueba.getTempo()>=120.0 && prueba.getTempo()<=125.0)
+				jazz.addLast(prueba);
+			if(prueba.getTempo()>=100.0 && prueba.getTempo()<=130.0)
+				pop.addLast(prueba);
+			if(prueba.getTempo()>=60.0 && prueba.getTempo()<=80.0)
+				rb.addLast(prueba);
+			if(prueba.getTempo()>=110.0 && prueba.getTempo()<=140.0)
+				rock.addLast(prueba);
+			if(prueba.getTempo()>=100.0 && prueba.getTempo()<=160.0)
+				metal.addLast(prueba);
+		}
+		
+		ArregloDinamico<Audio>res=new ArregloDinamico<>(10);
+		
+		if(buscado.compareToIgnoreCase("reggae")==0)
+			res =  reggae;
+		else if(buscado.compareToIgnoreCase("down-tempo")==0)
+		    res =  down;
+		else if(buscado.compareToIgnoreCase("chill-out")==0)
+		    res =  chill;
+		else if(buscado.compareToIgnoreCase("dhip-hop")==0)
+		    res =  hip;
+		else if(buscado.compareToIgnoreCase("jazz and funk")==0)
+		    res =  jazz;
+		else if(buscado.compareToIgnoreCase("pop")==0)
+		    res =  pop;
+		else if(buscado.compareToIgnoreCase("r&b")==0)
+		    res =  rb;
+		else if(buscado.compareToIgnoreCase("rock")==0)
+		    res =  rock;
+		else if(buscado.compareToIgnoreCase("metal")==0)
+		    res =  metal;
+		
+		return res;
+	}
+	
+	public int req4num(ArregloDinamico<String>nue){
+		//System.out.println(nue.size());
+		//System.out.println(nue.getElement(1));
+		int cont =0;
+		for(int i=1;i<(nue.size()+1);i++){
+			//System.out.println(nue.getElement(i));
+			cont += req4(nue.deleteElement(i)).size();
+		}
+		return cont;
 	}
 }

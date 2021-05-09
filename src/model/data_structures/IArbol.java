@@ -27,6 +27,6 @@ public interface IArbol<T>
 
 	public ArregloDinamico<Audio> darPreorden();
 	
-	public void insertar(T elemento);
+	public void insertar(T elemento) throws Exception;
     
 }
