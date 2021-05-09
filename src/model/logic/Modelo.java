@@ -256,12 +256,9 @@ public class Modelo {
 	}
 	
 	public int req4num(ArregloDinamico<String>nue){
-		//System.out.println(nue.size());
-		//System.out.println(nue.getElement(1));
 		int cont =0;
 		for(int i=1;i<(nue.size()+1);i++){
-			//System.out.println(nue.getElement(i));
-			cont += req4(nue.deleteElement(i)).size();
+			cont += req4(nue.getElement(i)).size();
 		}
 		return cont;
 	}

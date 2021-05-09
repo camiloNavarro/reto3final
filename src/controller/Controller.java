@@ -174,8 +174,7 @@ public class Controller {
 							view.printMessage(mensro);
 						else if(buscados.getElement(i).compareToIgnoreCase("reggae")==0)
 							view.printMessage(mensm);
-						else
-							view.printMessage("no existe el genero");
+
 						view.printMessage(buscados.getElement(i)+" reproductions: "+modelo.req4(buscados.getElement(i)).size());	
 						view.printMessage("----- Distinct artist for "+buscados.getElement(i)+" ----- ");
 						for(int j=1;j<11;j++){
