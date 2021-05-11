@@ -15,8 +15,9 @@ public class Audio implements Comparable<Audio>{
 	private float acousticness;
 	private float energy;
 	private String artist_id;
+	private String hora;
 	
-	public Audio(String pAudioID, float ins, float liv,float spe, float dan, float val, float loud, float tem, float aco, float ene, String art)
+	public Audio(String pAudioID, float ins, float liv,float spe, float dan, float val, float loud, float tem, float aco, float ene, String art, String hor)
 	{
 		audioID= pAudioID;
 		instrumentalness = ins;
@@ -29,6 +30,7 @@ public class Audio implements Comparable<Audio>{
 		acousticness = aco;
 		energy = ene;
 		artist_id = art;
+		hora =hor;
 	}
 	
 	public String getAudioID()
@@ -84,6 +86,11 @@ public class Audio implements Comparable<Audio>{
 	public String getArtistiID()
 	{
 		return artist_id;
+	}
+	
+	public String getHora()
+	{
+		return hora;
 	}
 	
 	@Override

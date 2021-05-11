@@ -48,11 +48,11 @@ public class View
 		public void printMenuRequerimientos()
 		{
 			System.out.println("Escoja el requerimiento que desea aplicar: ");
-			System.out.println("1. Encontrar buenos videos por categoria y por pais");
-			System.out.println("2. Encontrar video tendencia por pais");
-			System.out.println("3. Encontrar video tendencia por categoria");
-			System.out.println("4. Buscar los videos con mas likes");
-			System.out.println("5. Exit");
+			System.out.println("1. req1");
+			System.out.println("2. req2");
+			System.out.println("3. req3");
+			System.out.println("4. req4");
+			System.out.println("5. req5");
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}
 

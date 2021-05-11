@@ -42,6 +42,15 @@ public class Controller {
 			case 1:
 				view.printMessage("Cargando en arbol ");
 				modelo.cargarVideosDinamico(); 
+				view.printMessage("se cargo el arbol ");
+				
+				view.printMessage("Cargando ehashtags ");
+				modelo.cargarHash();; 
+				view.printMessage("se cargo el hash ");
+				
+				view.printMessage("Cargando diccionario ");
+				modelo.cargarDiccionario();;; 
+				view.printMessage("se cargo el diccionario ");
 
 				view.printMenuRequerimientos();
 				int optionReq = lector.nextInt();
@@ -185,7 +194,12 @@ public class Controller {
 					
 					break;
 				case 5:
-					fin = true;
+					view.printMessage("hora minima HH:MM:SS?");
+					String hmin = lector.next();
+					view.printMessage("hora maxima HH:MM:SS?");
+					String hmax = lector.next();
+					ArregloDinamico<Audio> bus =modelo.req5(hmin, hmax);
+					modelo.req5nom(bus);
 					break;
 				}
 			case 2: 
